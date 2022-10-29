@@ -33,7 +33,16 @@
                     <DataGridTextColumn Header="Money Owed" Binding="{Binding moneyOwed}"/>
                 </DataGrid.Columns>
             </DataGrid>
-            <Button Grid.Column="1" Grid.Row="3" Content="Add Person" Click="Button_Click"/>
+            <Button Grid.Column="1" Grid.Row="3" Content="Add Person" Click="AddPerson_Button_Click"/>
+        </StackPanel>
+
+        <StackPanel Grid.Column="2" Grid.Row="2" Margin="10">
+            
+            <!-- Subtotal -->
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Subtotal: $"/>
+                <TextBlock x:Name="subtotalText" Text="0"/>
+            </StackPanel>
         </StackPanel>
      
     </Grid>
