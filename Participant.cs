@@ -16,7 +16,7 @@ namespace DinnerCalculator
         }
         private string _name = String.Empty;
 
-        public float moneyOwed 
+        public decimal moneyOwed 
         {
             get => _moneyOwed;
             set
@@ -25,8 +25,8 @@ namespace DinnerCalculator
                 OnMoneyOwedChanged?.Invoke(_moneyOwed);   
             }
         }
-        private float _moneyOwed = 0;
+        private decimal _moneyOwed = 0;
 
-        public event System.Action<float> OnMoneyOwedChanged;
+        public event System.Action<decimal> OnMoneyOwedChanged;
     }
 }

@@ -40,9 +40,30 @@
             
             <!-- Subtotal -->
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Subtotal: $"/>
+                <TextBlock Text="Subtotal: "/>
                 <TextBlock x:Name="subtotalText" Text="0"/>
             </StackPanel>
+            
+            <!-- Tip Percent -->
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Tip: "/>
+                <TextBox x:Name="tipPercentText" Text="15"/>
+                <TextBlock Text="%"/>
+            </StackPanel>
+
+            <!-- Tax Percent -->
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Tax: "/>
+                <TextBox x:Name="taxPercentText" Text="9.75"/>
+                <TextBlock Text="%"/>
+            </StackPanel>
+
+            <!-- Total -->
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Total: "/>
+                <TextBlock x:Name="totalText" Text="0"/>
+            </StackPanel>
+
         </StackPanel>
      
     </Grid>

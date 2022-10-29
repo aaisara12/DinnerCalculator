@@ -33,15 +33,15 @@ namespace DinnerCalculator
         }
         private ObservableCollection<Participant> participants;
 
-        private float subtotal = 0;
-
         public MainWindow()
         {
             InitializeComponent();
             myDataGrid.ItemsSource = Participants;
-            subtotalText.Text = subtotal.ToString();
 
             Participants.CollectionChanged += SubscribeToNewParticipants;
+
+            subtotalText.Text = (0).ToString("C");
+            totalText.Text = (0).ToString("C");
         }
 
         private void SubscribeToNewParticipants(object sender, NotifyCollectionChangedEventArgs e)
@@ -64,7 +64,7 @@ namespace DinnerCalculator
         }
 
         // Wrapper around UpdateTotals to respond to money owed changed event
-        private void HandleMoneyOwedChanged(float newAmt)
+        private void HandleMoneyOwedChanged(decimal newAmt)
         {
             UpdateTotals();
         }
@@ -72,12 +72,20 @@ namespace DinnerCalculator
         // Recompute the totals
         private void UpdateTotals()
         {
-            subtotal = 0;
+            decimal subtotal = 0;
             foreach(Participant p in Participants)
             {
                 subtotal += p.moneyOwed;
             }
-            subtotalText.Text = subtotal.ToString();
+            
+
+            decimal tax = decimal.Parse(taxPercentText.Text) * 0.01m;
+            decimal tip = decimal.Parse(tipPercentText.Text) * 0.01m;
+
+            decimal total =  subtotal * (1 + (tax + tip));
+
+            subtotalText.Text = subtotal.ToString("C");
+            totalText.Text = total.ToString("C");
         }
 
         private void AddPerson_Button_Click(object sender, RoutedEventArgs e)
