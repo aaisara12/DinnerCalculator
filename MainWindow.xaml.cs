@@ -38,6 +38,7 @@ namespace DinnerCalculator
             InitializeComponent();
             myDataGrid.ItemsSource = Participants;
 
+
             Participants.CollectionChanged += SubscribeToNewParticipants;
 
             subtotalText.Text = (0).ToString("C");
@@ -50,23 +51,25 @@ namespace DinnerCalculator
             {
                 foreach (Participant p in e.NewItems)
                 {
-                    p.OnMoneyOwedChanged += HandleMoneyOwedChanged;
+                    p.PropertyChanged += HandlePropertyChanged;
                 }
             }
             if(e.OldItems != null)
             {
                 foreach(Participant p in e.OldItems)
                 {
-                    p.OnMoneyOwedChanged -= HandleMoneyOwedChanged;
+                    p.PropertyChanged -= HandlePropertyChanged;
                 }
             }
             
         }
 
+
         // Wrapper around UpdateTotals to respond to money owed changed event
-        private void HandleMoneyOwedChanged(decimal newAmt)
+        private void HandlePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            UpdateTotals();
+            if(e.PropertyName == "expenses" || e.PropertyName == "isPaying")
+                UpdateTotals();
         }
 
         // Recompute the totals
@@ -75,22 +78,31 @@ namespace DinnerCalculator
             decimal subtotal = 0;
             foreach(Participant p in Participants)
             {
-                subtotal += p.moneyOwed;
+                subtotal += p.expenses;
             }
-            
 
             decimal tax = decimal.Parse(taxPercentText.Text) * 0.01m;
             decimal tip = decimal.Parse(tipPercentText.Text) * 0.01m;
 
             decimal total =  subtotal * (1 + (tax + tip));
 
+            // TODO: True money owed column
+            // 1. Two more attributes of Participant class: isPaying and expenses
+            // 2. Make expenses column readonly
+            // 3. Update expenses after values changed (including isPaying)
+
             subtotalText.Text = subtotal.ToString("C");
             totalText.Text = total.ToString("C");
+
+            foreach (Participant p in Participants)
+            {
+                p.moneyOwed = (subtotal == 0)? 0 : (p.expenses / subtotal) * total;
+            }
         }
 
         private void AddPerson_Button_Click(object sender, RoutedEventArgs e)
         {
-            Participants.Add(new Participant { name = "", moneyOwed = 0 }); 
+            Participants.Add(new Participant { name = "", expenses = 0 }); 
         }
     }
 }

@@ -7,7 +7,7 @@ using System.ComponentModel;
 
 namespace DinnerCalculator
 {
-    internal class Participant
+    internal class Participant : INotifyPropertyChanged
     {
         public string name
         {
@@ -16,17 +16,45 @@ namespace DinnerCalculator
         }
         private string _name = String.Empty;
 
-        public decimal moneyOwed 
+        public decimal expenses 
+        {
+            get => _expenses;
+            set
+            {
+                _expenses = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("expenses"));
+            }
+        }
+        private decimal _expenses = 0;
+
+        public bool isPaying
+        {
+            get => _isPaying;
+            set
+            {
+                _isPaying = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("isPaying"));
+            }
+        }
+        private bool _isPaying = true;
+
+        public decimal moneyOwed
         {
             get => _moneyOwed;
             set
             {
                 _moneyOwed = value;
-                OnMoneyOwedChanged?.Invoke(_moneyOwed);   
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("moneyOwed"));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("moneyOwedString"));
             }
         }
         private decimal _moneyOwed = 0;
 
-        public event System.Action<decimal> OnMoneyOwedChanged;
+        public string moneyOwedString
+        {
+            get => _moneyOwed.ToString("C");
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }
