@@ -43,6 +43,7 @@ namespace DinnerCalculator
 
             subtotalText.Text = (0).ToString("C");
             totalText.Text = (0).ToString("C");
+
         }
 
         private void SubscribeToNewParticipants(object sender, NotifyCollectionChangedEventArgs e)
@@ -75,12 +76,20 @@ namespace DinnerCalculator
         // Recompute the totals
         private void UpdateTotals()
         {
+            // Make sure all the text components are ready -- is there a better way to do this?
+            if (tipPercentText == null || 
+                taxPercentText == null ||
+                totalText == null ||
+                subtotalText == null 
+                )
+                return;
+
             decimal subtotal = 0;
             foreach(Participant p in Participants)
             {
                 subtotal += p.expenses;
             }
-
+            
             decimal tax = decimal.Parse(taxPercentText.Text) * 0.01m;
             decimal tip = decimal.Parse(tipPercentText.Text) * 0.01m;
 
@@ -103,6 +112,16 @@ namespace DinnerCalculator
         private void AddPerson_Button_Click(object sender, RoutedEventArgs e)
         {
             Participants.Add(new Participant { name = "", expenses = 0 }); 
+        }
+
+        private void tipPercentText_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            UpdateTotals();
+        }
+
+        private void taxPercentText_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            UpdateTotals();
         }
     }
 }

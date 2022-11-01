@@ -49,14 +49,14 @@
             <!-- Tip Percent -->
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Tip: "/>
-                <TextBox x:Name="tipPercentText" Text="15"/>
+                <TextBox x:Name="tipPercentText" Text="15" TextChanged="tipPercentText_TextChanged"/>
                 <TextBlock Text="%"/>
             </StackPanel>
 
             <!-- Tax Percent -->
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Tax: "/>
-                <TextBox x:Name="taxPercentText" Text="9.75"/>
+                <TextBox x:Name="taxPercentText" Text="9.75" TextChanged="taxPercentText_TextChanged"/>
                 <TextBlock Text="%"/>
             </StackPanel>
 
