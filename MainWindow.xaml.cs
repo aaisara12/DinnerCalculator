@@ -15,6 +15,8 @@ using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 namespace DinnerCalculator
 {
@@ -31,6 +33,9 @@ namespace DinnerCalculator
             get => participants ?? (participants = new ObservableCollection<Participant>());
             set => participants = value;
         }
+
+        private static Regex digitsOnly = new Regex("[0-9]");
+
         private ObservableCollection<Participant> participants;
 
         public MainWindow()
@@ -86,7 +91,8 @@ namespace DinnerCalculator
             if (tipPercentText == null || 
                 taxPercentText == null ||
                 totalText == null ||
-                subtotalText == null 
+                subtotalText == null ||
+                participants.Count == 0
                 )
                 return;
 
@@ -104,10 +110,11 @@ namespace DinnerCalculator
                     numPaying++;
             }
 
-            decimal distributedCostPerParticipant = costToDistribute / numPaying; // How much extra each paying participant pays
-            
-            decimal tax = decimal.Parse(taxPercentText.Text) * 0.01m;
-            decimal tip = decimal.Parse(tipPercentText.Text) * 0.01m;
+            decimal distributedCostPerParticipant = numPaying == 0 ? 0 : costToDistribute / numPaying; // How much extra each paying participant pays
+
+            decimal tax = taxPercentText.Text.Length == 0 ? 0 : decimal.Parse(taxPercentText.Text) * 0.01m;
+
+            decimal tip = tipPercentText.Text.Length == 0 ? 0 : decimal.Parse(tipPercentText.Text) * 0.01m;
 
             decimal total =  subtotal * (1 + (tax + tip));
 
@@ -139,5 +146,12 @@ namespace DinnerCalculator
         {
             UpdateTotals();
         }
+
+        private void textBox_PreviewTextInput_DigitsOnly(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !IsTextDigits(e.Text);
+        }
+
+        private bool IsTextDigits(string text) => digitsOnly.IsMatch(text);
     }
 }
