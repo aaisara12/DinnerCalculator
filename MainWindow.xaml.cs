@@ -40,10 +40,16 @@ namespace DinnerCalculator
 
 
             Participants.CollectionChanged += SubscribeToNewParticipants;
+            Participants.CollectionChanged += HandleParticipantsListChanged;
 
             subtotalText.Text = (0).ToString("C");
             totalText.Text = (0).ToString("C");
 
+        }
+
+        private void HandleParticipantsListChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            UpdateTotals();
         }
 
         private void SubscribeToNewParticipants(object sender, NotifyCollectionChangedEventArgs e)
@@ -85,10 +91,20 @@ namespace DinnerCalculator
                 return;
 
             decimal subtotal = 0;
+            decimal costToDistribute = 0;   // Expenses of non-paying participants
+            int numPaying = 0;
+
             foreach(Participant p in Participants)
             {
                 subtotal += p.expenses;
+
+                if (!p.isPaying)
+                    costToDistribute += p.expenses;
+                else
+                    numPaying++;
             }
+
+            decimal distributedCostPerParticipant = costToDistribute / numPaying; // How much extra each paying participant pays
             
             decimal tax = decimal.Parse(taxPercentText.Text) * 0.01m;
             decimal tip = decimal.Parse(tipPercentText.Text) * 0.01m;
@@ -105,7 +121,7 @@ namespace DinnerCalculator
 
             foreach (Participant p in Participants)
             {
-                p.moneyOwed = (subtotal == 0)? 0 : (p.expenses / subtotal) * total;
+                p.moneyOwed = (subtotal == 0 || !p.isPaying)? 0 : ((p.expenses + distributedCostPerParticipant)/ subtotal) * total;
             }
         }
 
